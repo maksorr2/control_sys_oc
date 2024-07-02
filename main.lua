@@ -14,9 +14,8 @@ local oldfg = gpu.getForeground()
 local width, height = gpu.maxResolution()
 local version = "ver 0.1"
 local loadProgress = 0
-local language = localization('ru')
-print(language)
-
+--en, ru
+local language = language('en')
 
 local ModemA = Modem:new("modemA", 1)
 
@@ -73,7 +72,7 @@ function exit()
   local tEvent = {event.pull("touch")}
   if tEvent[1] ~= nil then
     if tEvent[3] == 1 and tEvent[4] == 1 then
-      gpu.set(80, 20, "Bye-Bye!")
+      gpu.set(80, 20, language['exit'])
       os.sleep(1)
 	  terminal.clear()
       os.exit()
@@ -89,8 +88,8 @@ function drawLoading()
 	
 	os.sleep(0.5)
 	
-	drawString(language, 160, 20, 0x000000, 0xFFFFFF, "center")
-	drawString("Please wait...", 165, 21, 0x000000, 0xFFFFFF, "center")
+	drawString(language['StartSys1'], 160, 20, 0x000000, 0xFFFFFF, "center")
+	drawString(language['StartSys2'], 165, 21, 0x000000, 0xFFFFFF, "center")
 	drawString(version, 154, 50, 0x000000, 0xFF0040, "here") 
 
 	drawRectangle(50, 23, 60, 1, 0x000000, 0xFFFFFF, unicode.char(0x2501))
@@ -115,6 +114,7 @@ function connect()
 end
 function drawUI()
   --Кнопка выхода
+  connect()
   drawPixel(1,1,0x000000, 0xFF0040, "X")
 end
 
@@ -124,6 +124,6 @@ function main()
   exit()
 end
 
---while true do
---  main()
---end
+while true do
+  main()
+end
