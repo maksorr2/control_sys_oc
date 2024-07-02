@@ -21,7 +21,7 @@ if fs.path('home/control_sys') then
           shell.execute('wget https://raw.githubusercontent.com/maksorr2/control_sys_oc/main/'..download[i])
         elseif i == 3 then
           print(i)
-          shell.setWorkingDirectory("/home/control_sys/utils")
+          shell.setWorkingDirectory("/home/control_sys/utiles")
           shell.execute('wget https://raw.githubusercontent.com/maksorr2/control_sys_oc/main/'..download[i])
         elseif i > 3 then
           print(i)
