@@ -10,9 +10,11 @@ local download = {
     'localization/localization.lua'
 }
 if fs.path('home/control_sys') then
-    fs.makeDirectory('home/control_sys')
-    fs.open('home/control_sys')
-    shell.execute('wget https://raw.githubusercontent.com/maksorr2/control_sys_oc/main/'..download)
+    for i = 1, #download do
+        fs.makeDirectory('home/control_sys')
+        fs.open('home/control_sys')
+        shell.execute('wget https://raw.githubusercontent.com/maksorr2/control_sys_oc/main/'..download[i])
+    end
 else
     print('Файл уже существует')
 end
