@@ -11,7 +11,7 @@ local download = {
 }
 if fs.path('home/control_sys') then
     fs.makeDirectory('home/control_sys')
-    fs.makeDirectory('home/control_sys/utils')
+    fs.makeDirectory('home/control_sys/utiles')
     fs.makeDirectory('home/control_sys/localization')
 
     for i = 1, #download do
