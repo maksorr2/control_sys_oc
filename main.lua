@@ -7,12 +7,16 @@ local unicode = require('unicode')
 local os = require("os")
 
 require("utiles/modem")
+require('localization/localization')
 
 local oldbg = gpu.getBackground()
 local oldfg = gpu.getForeground()
 local width, height = gpu.maxResolution()
 local version = "ver 0.1"
 local loadProgress = 0
+local language = localization('ru')
+print(language)
+
 
 local ModemA = Modem:new("modemA", 1)
 
@@ -69,9 +73,9 @@ function exit()
   local tEvent = {event.pull("touch")}
   if tEvent[1] ~= nil then
     if tEvent[3] == 1 and tEvent[4] == 1 then
-	  terminal.clear()
       gpu.set(80, 20, "Bye-Bye!")
       os.sleep(1)
+	  terminal.clear()
       os.exit()
     end
   end
@@ -85,7 +89,7 @@ function drawLoading()
 	
 	os.sleep(0.5)
 	
-	drawString("Starting up Fusion Control", 160, 20, 0x000000, 0xFFFFFF, "center")
+	drawString(language, 160, 20, 0x000000, 0xFFFFFF, "center")
 	drawString("Please wait...", 165, 21, 0x000000, 0xFFFFFF, "center")
 	drawString(version, 154, 50, 0x000000, 0xFF0040, "here") 
 
@@ -108,16 +112,18 @@ function connect()
 	drawLoading()
 	
 	drawProgress()
-
+end
 function drawUI()
   --Кнопка выхода
   drawPixel(1,1,0x000000, 0xFF0040, "X")
 end
+
 function main()
   terminal.clear()
   drawUI()
   exit()
 end
-while true do
-  main()
-end
+
+--while true do
+--  main()
+--end
