@@ -54,7 +54,7 @@ function drawString(text, x, y, bg, fg, value)
   local x = x or 0
   local y = y or 0
   local textLength = string.len(text)
-  local split = splitString(text)
+  --local split = splitString(text)
 
   --print(split)
 
