@@ -1,5 +1,7 @@
-local modem = require("component").modem 
-local serialize = require("serialization").serialize 
+local modem = require("component")
+local srl = require("serialization")
+local event = require("event")
+
 
 Modem={}
 
@@ -14,7 +16,11 @@ function Modem:new(name, port)
 end
 
 function Modem:createConnect(port)
-    modem.open(port)
+    if port ~= nil then
+        modem.open(port)
+    else
+        local port = obj.port
+        modem.open(port)
 end
 
 function Modem:closeConnect(port)
@@ -26,8 +32,26 @@ function Modem:test(a)
 end
 
 
-function Modem:sendMessage(table, port)
-    local message = serialization(table)
+function Modem:sendMessage(reciever, table, port)
+    if port == nil then
+        local port = 0
+    end
+    modem.open(port)
+    local message = srl.serialize(table)
+    modem.send(reciever, message, port)
 end
 
+
+
+function Modem:handleEvent(event_name, _, _, port, _, message)
+    if (event_name) then 
+        local listener_id = event.listen("modem_message", handleEvent)
+        if (listener_id) ~= false then
+            print('pass')
+        else
+            print("failed to register listener")
+            return 
+        end
+    end
+end
 
