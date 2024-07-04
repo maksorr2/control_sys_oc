@@ -21,6 +21,7 @@ function Modem:createConnect(port)
     else
         local port = obj.port
         modem.open(port)
+    end
 end
 
 function Modem:closeConnect(port)
