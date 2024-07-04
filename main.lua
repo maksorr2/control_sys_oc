@@ -1,10 +1,11 @@
 local component = require("component")
-local gpu = component.gpu
 local colors = require("colors")
 local event = require("event")
 local terminal = require("term")
 local unicode = require('unicode')
 local os = require("os")
+local srl = require("serialization")
+local gpu = component.gpu
 
 require("utiles/modem")
 require('localization/localization')
@@ -37,34 +38,44 @@ function drawRectangle(x, y, width, height, bg, fg, text)
   gpu.setForeground(oldfg)
 end 
 
-function drawString(text, x, y, bg, fg, value)
-	local l = string.len(text)
-	local n = 0
-	
-	--Пробелы	
-	for i = l, 1, -1 do
-		if string.sub(text, i, i) == ' ' then
-			n = n + 1
-		end
-	end
+--function splitString(inputstr, sep)
+--  if sep == nil then
+--    sep = "%s"
+--  end
+--  local t = {}
+--  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+--    table.insert(t, str)
+--  end
+--  local table = srl.serialize(t) 
+--  return table
+--end
 
-	if value == "here" then
-		x = x
-		drawPixel(x,y,bg, fg, text)
-	elseif value == "center" then
-		x = (x//2 - l) + (n*4)
-		drawPixel(x,y,bg, fg, text)
-	elseif value == "left" then
-		x = width//8
-		drawPixel(x,y,bg, fg, text)
-	--elseif value == "left" then
-	--	x = x - l*5+2 + n*4
-	--	drawPixel(x,y,oldbg, oldfg, text)
-	--elseif value == "right" then
-	--	x = x - math.floor(l*6/2 + n*4)
-	--	drawPixel(x,y,oldbg, oldfg, text)
-	end
-	return x,y
+function drawString(text, x, y, bg, fg, value)
+  local x = x or 0
+  local y = y or 0
+  local textLength = string.len(text)
+  local split = splitString(text)
+
+  --print(split)
+
+  local topRightX = width - textLength
+  local bottomLeft = height - 1
+  local bottomRight = width - textLength
+  local centerX = (width - textLength) // 2
+  local centerY = (height // 2) - 1
+	
+  if value == "topLeft" then
+    drawPixel(x,y, bg, fg, text)
+  elseif value == "topRight" then
+    drawPixel(topRightX,y,bg,fg,text)
+  elseif value == "bottomLeft" then
+    drawPixel(x,bottomLeft, bg, fg, text)
+  elseif value == "bottomRight" then
+    drawPixel(bottomRight, bottomLeft, bg, fg, text)
+  elseif value == "centerX" then
+    drawPixel(centerX, y, bg, fg, text)
+  end
+  return x, y, value
 end
 
 --Выход
@@ -72,7 +83,7 @@ function exit()
   local tEvent = {event.pull("touch")}
   if tEvent[1] ~= nil then
     if tEvent[3] == 1 and tEvent[4] == 1 then
-      gpu.set(80, 20, language['exit'])
+      drawString(language['exit'], nil, 49, 0x000000, 0xFFFFFF, "centerX")
       os.sleep(1)
 	  terminal.clear()
       os.exit()
@@ -88,8 +99,8 @@ function drawLoading()
 	
 	os.sleep(0.5)
 	
-	drawString(language['StartSys1'], 160, 20, 0x000000, 0xFFFFFF, "center")
-	drawString(language['StartSys2'], 165, 21, 0x000000, 0xFFFFFF, "center")
+	drawString(language['StartSys1'], nil, 20, 0x000000, 0xFFFFFF, "centerX")
+	drawString(language['StartSys2'], nil, 21, 0x000000, 0xFFFFFF, "centerX")
 	drawString(version, 154, 50, 0x000000, 0xFF0040, "here") 
 
 	drawRectangle(50, 23, 60, 1, 0x000000, 0xFFFFFF, unicode.char(0x2501))
@@ -113,8 +124,8 @@ function connect()
 	drawProgress()
 end
 function drawUI()
-  --Кнопка выхода
   connect()
+  --Кнопка выхода (dev)
   drawPixel(1,1,0x000000, 0xFF0040, "X")
 end
 
